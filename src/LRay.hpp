@@ -21,6 +21,7 @@ class LRay{
         std::tuple<bool, Vector2> getLineIntersection(LRay&);
         std::tuple<bool,Vector2, LRay*> getSegmentIntersection(LRay&);
         LRay& updateLength(LRay&);
+        LRay* getCollidingCurrent();
         void render();
         LRay(Vector2, Vector2, bool, Color);
         LRay(Vector2, float, float, bool, Color);
@@ -32,7 +33,7 @@ class LRay{
 
 };   
 
-
+// this is to make so the compiler doesn't cry;
 LRay* LRayNullPtr = nullptr;
 
 LRay::LRay(Vector2 start, Vector2 end, bool isObstacle = false, Color renderColor = BLACK){
@@ -65,6 +66,17 @@ LRay::~LRay(){
 
 
 }
+
+
+LRay* LRay::getCollidingCurrent(){
+
+    return this -> collidingCurrent;
+
+}
+
+
+
+
 
 void LRay::adjustAngle(float angle){
 
@@ -132,10 +144,13 @@ std::tuple<bool, Vector2, LRay*> LRay::getSegmentIntersection(LRay& target){
 
     if(((r0.x > 0.0 && r0.x < 1.0) || (r0.y > 0.0 && r0.y < 1.0)) && ((r1.x > 0.0 && r1.x < 1.0) || (r1.y > 0.0 && r1.y < 1.0))){
 
+        this -> collidingCurrent = &target;
+
         return std::make_tuple(true, intersection, &target);
 
     }else{
 
+        this -> collidingCurrent = LRayNullPtr;
         return std::make_tuple(false, L_NAN_VECTOR2, LRayNullPtr);
         
     }

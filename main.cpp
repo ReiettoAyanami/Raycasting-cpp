@@ -26,7 +26,7 @@ int main(void)
         auto coords = std::get<1>(r.getSegmentIntersection(obstacle1));
         r.pointTo(GetMousePosition());
         
-
+        std::cout << r.getCollidingCurrent() << " " << &obstacle1 << std::endl;
 
         r.render();
         obstacle1.render();
