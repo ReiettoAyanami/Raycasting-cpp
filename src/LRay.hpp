@@ -4,6 +4,8 @@
 #include <utility>
 #include "utils.hpp"
 
+#ifndef LRAY_HPP
+    #define LRAY_HPP
 
 class LRay{
 
@@ -178,3 +180,5 @@ void LRay::render(){
     DrawLineV(this -> start, this -> end, this -> renderColor);
 
 }
+
+#endif

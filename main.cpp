@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <iostream>
+#include "src/LRaycaster.hpp"
 #include "src/LRay.hpp"
 
 int main(void)
@@ -9,9 +10,9 @@ int main(void)
     const int screenWidth = 800;
     const int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "Raycaster LLLLL");
     
-    LRay r = LRay{Vector2{screenWidth/2.0, screenHeight/2.0 + 100}, 100.f};
+    LRayCaster caster = LRayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.1f};
     LRay obstacle1 = LRay{Vector2{0, 0},Vector2{(float)screenWidth, (float)screenHeight}, true, RED};
 
     SetTargetFPS(60);              
@@ -19,20 +20,18 @@ int main(void)
     
     while (!WindowShouldClose())   
     {
+        
+        
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
+        float deltaTime = GetFrameTime();
 
-        auto coords = std::get<1>(r.getSegmentIntersection(obstacle1));
-        r.pointTo(GetMousePosition());
-        
-        std::cout << r.getCollidingCurrent() << " " << &obstacle1 << std::endl;
+        caster.pointTo(GetMousePosition());
 
-        r.render();
+        caster.render();
         obstacle1.render();
-        DrawCircleV(coords, 5, BLUE);
         
-
 
         EndDrawing();
     }
