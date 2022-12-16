@@ -109,7 +109,7 @@ void LRayCaster::follow(Vector2 target, float offset, float deltaTime){
 
     float angle = getAngleBetween(this -> position, target);
 
-    this -> velocity = Vector2Multiply(Vector2{distance - acos(angle), distance * sin(angle)}, Vector2{deltaTime, deltaTime});
+    this -> velocity = Vector2Multiply(Vector2{distance * -cos(angle), distance * sin(angle)}, Vector2{deltaTime, deltaTime});
     this -> position = Vector2Add(this -> position, this -> velocity);
 
     for(auto& ray : this -> rays){

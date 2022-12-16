@@ -28,7 +28,8 @@ int main(void)
         float deltaTime = GetFrameTime();
 
         caster.pointTo(GetMousePosition());
-
+        caster.follow(GetMousePosition(), 50.f, deltaTime);
+        caster.update(obstacle1);
         caster.render();
         obstacle1.render();
         
