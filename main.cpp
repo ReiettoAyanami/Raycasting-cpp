@@ -17,6 +17,7 @@ int main(void)
     const int width = screenWidth * 2;
     const int height = screenHeight * 2;
     
+    
     srand(0);
 
     InitWindow(width, height, "Raycaster LLLLL");
