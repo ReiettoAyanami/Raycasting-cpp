@@ -6,20 +6,20 @@
 
 
 #ifndef LRAYCASTER_HPP
-#define LRAYCASTER_HPP
+    #define LRAYCASTER_HPP
 
 #define DEFAULT_HITBOX_SIZE 10.f
 
+namespace L{
 
-
-class LRayCaster{
+class RayCaster{
 
     public:
 
         Vector2 position;
         float rayLength;
         Color renderColor;
-        std::vector<LRay*> rays;
+        std::vector<L::Ray*> rays;
         float step;
 
 
@@ -27,13 +27,13 @@ class LRayCaster{
         void pointTo(Vector2);
         void follow(Vector2, float, float);
         std::vector<float> getRaysIntersectionDistance();
-        LRay* getCollidingAt(int);
-        void update(LRay&);
+        L::Ray* getCollidingAt(int);
+        void update(L::Ray&);
         void render();
 
 
-        LRayCaster(Vector2, float, float, float, float, Color);
-        ~LRayCaster();
+        RayCaster(Vector2, float, float, float, float, Color);
+        ~RayCaster();
 
 
     private:
@@ -47,7 +47,7 @@ class LRayCaster{
 
 };
 
-LRayCaster::LRayCaster(Vector2 position, float startingAngle = M_PI_2, float fov = 60.f, float step = 1.f, float rayLength = 50.f, Color renderColor = BLACK){
+RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov = 60.f, float step = 1.f, float rayLength = 50.f, Color renderColor = BLACK){
 
     
     const long int numIterations = (long int)(fov / step);
@@ -55,7 +55,7 @@ LRayCaster::LRayCaster(Vector2 position, float startingAngle = M_PI_2, float fov
     for(int i = 0; i < numIterations; ++i){
 
         float angle = startingAngle - (step * (float)i);
-        LRay* tempRay = new LRay{position,rayLength, angle, false, renderColor};
+        L::Ray* tempRay = new L::Ray{position,rayLength, angle, false, renderColor};
         this -> rays.push_back(tempRay);
 
     }
@@ -71,10 +71,10 @@ LRayCaster::LRayCaster(Vector2 position, float startingAngle = M_PI_2, float fov
 
 }
 
-LRayCaster::~LRayCaster(){
+RayCaster::~RayCaster(){
 }
 
-void LRayCaster::constrainTo(Rectangle boundaries){
+void RayCaster::constrainTo(Rectangle boundaries){
 
     if(!CheckCollisionPointRec(this -> position, boundaries)){
 
@@ -85,7 +85,7 @@ void LRayCaster::constrainTo(Rectangle boundaries){
 
 }
 
-void LRayCaster::pointTo(Vector2 target){
+void RayCaster::pointTo(Vector2 target){
 
     float fov = this -> step * ((float)(this -> rays.size()) - 1.f);
     float relativeAngle = fov / 2.f;
@@ -100,7 +100,7 @@ void LRayCaster::pointTo(Vector2 target){
 
 }
 
-void LRayCaster::follow(Vector2 target, float offset, float deltaTime){
+void RayCaster::follow(Vector2 target, float offset, float deltaTime){
 
     float distance = Vector2Distance(this -> position, target);
 
@@ -120,7 +120,7 @@ void LRayCaster::follow(Vector2 target, float offset, float deltaTime){
 
 }
 
-std::vector<float> LRayCaster::getRaysIntersectionDistance(){
+std::vector<float> RayCaster::getRaysIntersectionDistance(){
 
     std::vector<float> distances;
 
@@ -133,13 +133,13 @@ std::vector<float> LRayCaster::getRaysIntersectionDistance(){
     return distances;
 }   
 
-LRay* LRayCaster::getCollidingAt(int index){
+L::Ray* RayCaster::getCollidingAt(int index){
 
     return this-> rays[index] -> getCollidingCurrent();
 
 }
 
-void LRayCaster::update(LRay& obstacle){
+void RayCaster::update(L::Ray& obstacle){
 
     for(auto& ray : this -> rays){
 
@@ -149,7 +149,7 @@ void LRayCaster::update(LRay& obstacle){
 
 }
 
-void LRayCaster::render(){
+void RayCaster::render(){
 
 
     for(auto& ray : this -> rays){
@@ -159,5 +159,5 @@ void LRayCaster::render(){
     }
 
 }
-
+}
 #endif

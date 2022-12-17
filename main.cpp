@@ -2,18 +2,33 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <iostream>
+#include <vector>
+#include <stdlib.h>
+#include <time.h>
 #include "src/LRaycaster.hpp"
 #include "src/LRay.hpp"
+#include "src/LRenderer.hpp"
 
 int main(void)
 {
     const int screenWidth = 800;
     const int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "Raycaster LLLLL");
+    const int width = screenWidth * 2;
+    const int height = screenHeight * 2;
     
-    LRayCaster caster = LRayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.1f};
-    LRay obstacle1 = LRay{Vector2{0, 0},Vector2{(float)screenWidth, (float)screenHeight}, true, RED};
+    srand(0);
+
+    InitWindow(width, height, "Raycaster LLLLL");
+    
+    L::RayCaster caster = L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.01f, 50.f, BLACK};
+
+    L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, screenHeight, screenWidth, screenHeight});
+    
+    L::Ray obstacle(Vector2{100.f,100.f}, Vector2{300.f,300.f}, true, RED);
+    L::Ray obstacle2(Vector2{200.f,100.f}, Vector2{400.f,300.f}, true, RED);
+
+    // fix shit in L::Renderer
 
     SetTargetFPS(60);              
 
@@ -24,15 +39,20 @@ int main(void)
         
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(WHITE);
         float deltaTime = GetFrameTime();
 
+        
         caster.pointTo(GetMousePosition());
         caster.follow(GetMousePosition(), 50.f, deltaTime);
-        caster.update(obstacle1);
-        caster.render();
-        obstacle1.render();
         
+        caster.update(obstacle);
+        caster.update(obstacle2);
+
+        obstacle2.render();
+        obstacle.render();
+        renderer.render();
+        caster.render();
 
         EndDrawing();
     }

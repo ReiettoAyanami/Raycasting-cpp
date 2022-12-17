@@ -6,8 +6,10 @@
 
 #ifndef LRAY_HPP
     #define LRAY_HPP
+    #define LRAYNULLPTR (Ray*) nullptr
 
-class LRay{
+namespace L{
+class Ray{
 
     public:
         Vector2 start;
@@ -20,37 +22,40 @@ class LRay{
 
         void adjustAngle(float);
         float pointTo(Vector2);
-        std::tuple<bool, Vector2> getLineIntersection(LRay&);
-        std::tuple<bool,Vector2, LRay*> getSegmentIntersection(LRay&);
-        LRay& updateLength(LRay&);
-        LRay* getCollidingCurrent();
+        std::tuple<bool, Vector2> getLineIntersection(Ray&);
+        std::tuple<bool,Vector2, Ray*> getSegmentIntersection(Ray&);
+        Ray& updateLength(Ray&);
+        Ray* getCollidingCurrent();
         void render();
-        LRay(Vector2, Vector2, bool, Color);
-        LRay(Vector2, float, float, bool, Color);
-        ~LRay();
+        
+        Ray();
+        Ray(Vector2, Vector2, bool, Color);
+        Ray(Vector2, float, float, bool, Color);
+        ~Ray();
+
 
         private:
-            LRay* collidingCurrent;
+            Ray* collidingCurrent;
 
 
 };   
 
-// this is to make so the compiler doesn't cry;
-LRay* LRayNullPtr = nullptr;
 
-LRay::LRay(Vector2 start, Vector2 end, bool isObstacle = false, Color renderColor = BLACK){
+Ray::Ray(){}
+
+Ray::Ray(Vector2 start, Vector2 end, bool isObstacle = false, Color renderColor = BLACK){
 
     
     this -> start = start;
     this -> end = end;
     this -> length = Vector2Distance(start,end);
     this -> renderColor = renderColor;
-    this -> collidingCurrent = LRayNullPtr;
+    this -> collidingCurrent = LRAYNULLPTR;
     this -> isObstacle = isObstacle;
 
 }
 
-LRay::LRay(Vector2 start, float length = 0.f, float angle = 0.f, bool isObstacle = false, Color renderColor = BLACK){
+Ray::Ray(Vector2 start, float length = 0.f, float angle = 0.f, bool isObstacle = false, Color renderColor = BLACK){
 
     Vector2 end = Vector2{cos(angle) * length, -sin(angle) * length};
 
@@ -59,18 +64,18 @@ LRay::LRay(Vector2 start, float length = 0.f, float angle = 0.f, bool isObstacle
     this -> end = end;
     this -> isObstacle = isObstacle;
     this -> renderColor = renderColor;
-    this -> collidingCurrent = LRayNullPtr;
+    this -> collidingCurrent = LRAYNULLPTR;
 
 }
 
-LRay::~LRay(){
+Ray::~Ray(){
 
 
 
 }
 
 
-LRay* LRay::getCollidingCurrent(){
+Ray* Ray::getCollidingCurrent(){
 
     return this -> collidingCurrent;
 
@@ -80,14 +85,14 @@ LRay* LRay::getCollidingCurrent(){
 
 
 
-void LRay::adjustAngle(float angle){
+void Ray::adjustAngle(float angle){
 
 
     this -> end = Vector2Add(this -> start, Vector2{cos(angle) * this -> length, -sin(angle) * this -> length});
 }
 
 
-float LRay::pointTo(Vector2 target){
+float Ray::pointTo(Vector2 target){
 
     Vector2 deltaPos = Vector2Subtract(target, this -> start);
     const float m = -deltaPos.y / deltaPos.x;
@@ -108,7 +113,7 @@ float LRay::pointTo(Vector2 target){
 
 }
 
-std::tuple<bool, Vector2> LRay::getLineIntersection(LRay& target){
+std::tuple<bool, Vector2> Ray::getLineIntersection(Ray& target){
 
     if(!target.isObstacle) return std::make_tuple(false, L_NAN_VECTOR2);
 
@@ -133,11 +138,11 @@ std::tuple<bool, Vector2> LRay::getLineIntersection(LRay& target){
     return std::make_tuple(isIntersecting, Vector2{(b2 * c1 - b1 * c2) / den, (a1 * c2 - a2 * c1) / den});
 }
 
-std::tuple<bool, Vector2, LRay*> LRay::getSegmentIntersection(LRay& target){
+std::tuple<bool, Vector2, Ray*> Ray::getSegmentIntersection(Ray& target){
 
     
 
-    if(!target.isObstacle) return std::make_tuple(false, L_NAN_VECTOR2, LRayNullPtr);
+    if(!target.isObstacle) return std::make_tuple(false, L_NAN_VECTOR2, LRAYNULLPTR);
 
     Vector2 intersection = std::get<1>(this -> getLineIntersection(target));
 
@@ -152,15 +157,15 @@ std::tuple<bool, Vector2, LRay*> LRay::getSegmentIntersection(LRay& target){
 
     }else{
 
-        this -> collidingCurrent = LRayNullPtr;
-        return std::make_tuple(false, L_NAN_VECTOR2, LRayNullPtr);
+        this -> collidingCurrent = LRAYNULLPTR;
+        return std::make_tuple(false, L_NAN_VECTOR2, LRAYNULLPTR);
         
     }
     
     
 }
 
-LRay& LRay::updateLength(LRay& obstacle){
+Ray& Ray::updateLength(Ray& obstacle){
 
     auto intersectionInfo = this -> getSegmentIntersection(obstacle);
     Vector2 intersectionPos = std::get<1>(intersectionInfo);
@@ -175,10 +180,11 @@ LRay& LRay::updateLength(LRay& obstacle){
 
 }
 
-void LRay::render(){
+void Ray::render(){
 
     DrawLineV(this -> start, this -> end, this -> renderColor);
 
 }
 
+}
 #endif
