@@ -2,7 +2,10 @@
 #include <raymath.h>
 #include <vector>
 #include <utility>
+#include <memory>
 #include "LRay.hpp"
+
+
 
 
 #ifndef LRAYCASTER_HPP
@@ -19,15 +22,14 @@ class RayCaster{
         Vector2 position;
         float rayLength;
         Color renderColor;
-        std::vector<L::Ray*> rays;
+        std::vector<std::shared_ptr<L::Ray>> rays;
         float step;
-
 
         void constrainTo(Rectangle);
         void pointTo(Vector2);
         void follow(Vector2, float, float);
         std::vector<float> getRaysIntersectionDistance();
-        L::Ray* getCollidingAt(int);
+        std::shared_ptr<L::Ray> getCollidingAt(int);
         void update(L::Ray&);
         void render();
 
@@ -55,8 +57,8 @@ RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov =
     for(int i = 0; i < numIterations; ++i){
 
         float angle = startingAngle - (step * (float)i);
-        L::Ray* tempRay = new L::Ray{position,rayLength, angle, false, renderColor};
-        this -> rays.push_back(tempRay);
+        L::Ray tempRay = L::Ray{position,rayLength, angle, false, renderColor};
+        this -> rays.push_back(std::make_shared<L::Ray>(tempRay));
 
     }
 
@@ -133,7 +135,7 @@ std::vector<float> RayCaster::getRaysIntersectionDistance(){
     return distances;
 }   
 
-L::Ray* RayCaster::getCollidingAt(int index){
+std::shared_ptr<L::Ray> RayCaster::getCollidingAt(int index){
 
     return this-> rays[index] -> getCollidingCurrent();
 

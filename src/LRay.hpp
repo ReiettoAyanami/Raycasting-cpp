@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <tuple>
 #include <utility>
+#include <memory>
 #include "utils.hpp"
 
 #ifndef LRAY_HPP
@@ -23,9 +24,9 @@ class Ray{
         void adjustAngle(float);
         float pointTo(Vector2);
         std::tuple<bool, Vector2> getLineIntersection(Ray&);
-        std::tuple<bool,Vector2, Ray*> getSegmentIntersection(Ray&);
-        Ray& updateLength(Ray&);
-        Ray* getCollidingCurrent();
+        std::tuple<bool,Vector2, std::shared_ptr<Ray>> getSegmentIntersection(Ray&);
+        void updateLength(Ray&);
+        std::shared_ptr<Ray> getCollidingCurrent();
         void render();
         
         Ray();
@@ -35,7 +36,7 @@ class Ray{
 
 
         private:
-            Ray* collidingCurrent;
+            std::shared_ptr<Ray> collidingCurrent;
 
 
 };   
@@ -50,7 +51,7 @@ Ray::Ray(Vector2 start, Vector2 end, bool isObstacle = false, Color renderColor 
     this -> end = end;
     this -> length = Vector2Distance(start,end);
     this -> renderColor = renderColor;
-    this -> collidingCurrent = LRAYNULLPTR;
+    this -> collidingCurrent = std::make_shared<Ray>(LRAYNULLPTR);
     this -> isObstacle = isObstacle;
 
 }
@@ -64,7 +65,7 @@ Ray::Ray(Vector2 start, float length = 0.f, float angle = 0.f, bool isObstacle =
     this -> end = end;
     this -> isObstacle = isObstacle;
     this -> renderColor = renderColor;
-    this -> collidingCurrent = LRAYNULLPTR;
+    this -> collidingCurrent = std::make_shared<Ray>(LRAYNULLPTR);
 
 }
 
@@ -75,7 +76,7 @@ Ray::~Ray(){
 }
 
 
-Ray* Ray::getCollidingCurrent(){
+std::shared_ptr<Ray> Ray::getCollidingCurrent(){
 
     return this -> collidingCurrent;
 
@@ -138,34 +139,40 @@ std::tuple<bool, Vector2> Ray::getLineIntersection(Ray& target){
     return std::make_tuple(isIntersecting, Vector2{(b2 * c1 - b1 * c2) / den, (a1 * c2 - a2 * c1) / den});
 }
 
-std::tuple<bool, Vector2, Ray*> Ray::getSegmentIntersection(Ray& target){
+std::tuple<bool, Vector2, std::shared_ptr<Ray>> Ray::getSegmentIntersection(Ray& target){
 
     
 
-    if(!target.isObstacle) return std::make_tuple(false, L_NAN_VECTOR2, LRAYNULLPTR);
+    if(!target.isObstacle)
+    {
+        
+        this -> collidingCurrent = std::make_shared<Ray>(LRAYNULLPTR);   
+        return std::make_tuple(false, L_NAN_VECTOR2, this -> collidingCurrent);
+
+    }
 
     Vector2 intersection = std::get<1>(this -> getLineIntersection(target));
 
-    Vector2 r0 = Vector2{(intersection.x - this -> end.x) / (this -> start.x - this -> end.x ), (intersection.y - this -> end.y) / (this -> start.y - this -> end.y)};
-    Vector2 r1 = Vector2{(intersection.x -  target.end.x) / ( target.start.x -  target.end.x ), (intersection.y -  target.end.y) / (this -> start.y - this -> end.y)};
+    Vector2 r0 = Vector2{(intersection.x - this -> end.x) / ( this -> start.x - this -> end.x ), (intersection.y - this -> end.y) / ( this -> start.y - this -> end.y)};
+    Vector2 r1 = Vector2{(intersection.x -  target.end.x) / ( target.start.x -  target.end.x ), (intersection.y -  target.end.y) / ( target.start.y - target.end.y)};
 
     if(((r0.x > 0.0 && r0.x < 1.0) || (r0.y > 0.0 && r0.y < 1.0)) && ((r1.x > 0.0 && r1.x < 1.0) || (r1.y > 0.0 && r1.y < 1.0))){
 
-        this -> collidingCurrent = &target;
+        this -> collidingCurrent = std::make_shared<Ray>(target);
 
-        return std::make_tuple(true, intersection, &target);
+        return std::make_tuple(true, intersection, this -> collidingCurrent);
 
     }else{
 
-        this -> collidingCurrent = LRAYNULLPTR;
-        return std::make_tuple(false, L_NAN_VECTOR2, LRAYNULLPTR);
+        this -> collidingCurrent = std::make_shared<Ray>(LRAYNULLPTR);
+        return std::make_tuple(false, L_NAN_VECTOR2, this -> collidingCurrent);
         
     }
     
     
 }
 
-Ray& Ray::updateLength(Ray& obstacle){
+void Ray::updateLength(Ray& obstacle){
 
     auto intersectionInfo = this -> getSegmentIntersection(obstacle);
     Vector2 intersectionPos = std::get<1>(intersectionInfo);
@@ -176,7 +183,7 @@ Ray& Ray::updateLength(Ray& obstacle){
 
     }
 
-    return obstacle;
+    
 
 }
 
@@ -187,4 +194,6 @@ void Ray::render(){
 }
 
 }
+
 #endif
+

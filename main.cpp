@@ -17,6 +17,8 @@ int main(void)
     const int width = screenWidth * 2;
     const int height = screenHeight * 2;
     
+    // Fixed bug in LRay: Wrong collisions
+
     
     srand(0);
 
