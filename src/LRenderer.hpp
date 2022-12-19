@@ -83,6 +83,7 @@ namespace L{
             }else{
 
                 renderColor = Color{0,255,0,255};
+                continue;
 
             }
 

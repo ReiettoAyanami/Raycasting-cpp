@@ -31,7 +31,7 @@ class RayCaster{
         void follow(Vector2, float, float);
         std::vector<float> getRaysIntersectionDistance();
         std::shared_ptr<L::Ray> getCollidingAt(int);
-        void update(L::Ray&);
+        void update(std::shared_ptr<L::Ray>);
         void update(std::vector<std::shared_ptr<L::Ray>>);
         void render();
 
@@ -145,7 +145,7 @@ std::shared_ptr<L::Ray> RayCaster::getCollidingAt(int index){
 
 }
 
-void RayCaster::update(L::Ray& obstacle){
+void RayCaster::update(std::shared_ptr<L::Ray> obstacle){
 
     for(auto& ray : this -> rays){
 
@@ -164,7 +164,7 @@ void RayCaster::update(std::vector<std::shared_ptr<L::Ray>> obstacles){
         for(auto& ray: this -> rays){
 
 
-            ray -> updateLength( *obstacle );
+            ray -> updateLength( obstacle );
 
         }
 
