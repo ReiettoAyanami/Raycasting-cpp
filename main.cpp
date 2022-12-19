@@ -3,6 +3,7 @@
 #include <raymath.h>
 #include <iostream>
 #include <vector>
+#include <memory>
 #include <stdlib.h>
 #include <time.h>
 #include "src/LRaycaster.hpp"
@@ -17,21 +18,23 @@ int main(void)
     const int width = screenWidth * 2;
     const int height = screenHeight * 2;
     
+    // Fixed bug in LRay: Wrong collisions
+    
     
     srand(0);
 
-    InitWindow(width, height, "Raycaster LLLLL");
+    InitWindow(width, screenHeight, "Raycaster LLLLL");
     
-    L::RayCaster caster = L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.01f, 50.f, BLACK};
+    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.01f, 500.f, BLACK});
 
-    L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, screenHeight, screenWidth, screenHeight});
+    L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, screenWidth, screenHeight});
     
-    L::Ray obstacle(Vector2{100.f,100.f}, Vector2{300.f,300.f}, true, RED);
-    L::Ray obstacle2(Vector2{200.f,100.f}, Vector2{400.f,300.f}, true, RED);
+    std::shared_ptr<L::Ray> obstacle = std::make_shared<L::Ray>(L::Ray{Vector2{100.f,100.f}, Vector2{300.f,300.f}, true, RED});
+    std::shared_ptr<L::Ray> obstacle2 = std::make_shared<L::Ray>(L::Ray(Vector2{200.f,100.f}, Vector2{400.f,300.f}, true, RED));
 
-    // fix shit in L::Renderer
+    // Disappearing ptr when passing a ptr;
 
-    SetTargetFPS(60);              
+    //SetTargetFPS(60);              
 
     
     while (!WindowShouldClose())   
@@ -43,17 +46,19 @@ int main(void)
         ClearBackground(WHITE);
         float deltaTime = GetFrameTime();
 
-        
-        caster.pointTo(GetMousePosition());
-        caster.follow(GetMousePosition(), 50.f, deltaTime);
-        
-        caster.update(obstacle);
-        caster.update(obstacle2);
+        //std :: cout << obstacle2.isObstacle << std::endl;
+        caster -> pointTo(GetMousePosition());
+        caster -> follow(GetMousePosition(), 50.f, deltaTime);
 
-        obstacle2.render();
-        obstacle.render();
+        
+    
+        caster -> update(obstacle2);
+        caster -> update(obstacle);
+
+        obstacle2-> render();
+        obstacle -> render();
         renderer.render();
-        caster.render();
+        caster -> render();
 
         EndDrawing();
     }
