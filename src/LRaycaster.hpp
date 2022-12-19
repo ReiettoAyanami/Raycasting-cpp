@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 #include <memory>
+#include <iostream>
 #include "LRay.hpp"
 
 
@@ -31,6 +32,7 @@ class RayCaster{
         std::vector<float> getRaysIntersectionDistance();
         std::shared_ptr<L::Ray> getCollidingAt(int);
         void update(L::Ray&);
+        void update(std::vector<std::shared_ptr<L::Ray>>);
         void render();
 
 
@@ -137,6 +139,8 @@ std::vector<float> RayCaster::getRaysIntersectionDistance(){
 
 std::shared_ptr<L::Ray> RayCaster::getCollidingAt(int index){
 
+    
+
     return this-> rays[index] -> getCollidingCurrent();
 
 }
@@ -147,9 +151,29 @@ void RayCaster::update(L::Ray& obstacle){
 
         ray -> updateLength( obstacle );
 
+        
+
     }
 
 }
+
+void RayCaster::update(std::vector<std::shared_ptr<L::Ray>> obstacles){
+
+    for(auto& obstacle : obstacles){
+
+        for(auto& ray: this -> rays){
+
+
+            ray -> updateLength( *obstacle );
+
+        }
+
+
+    }
+
+
+}
+
 
 void RayCaster::render(){
 

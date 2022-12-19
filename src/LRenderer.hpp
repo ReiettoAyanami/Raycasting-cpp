@@ -56,6 +56,8 @@ namespace L{
         auto fov = this -> camera.step * (float) this -> camera.rays.size();
         //auto rays = this -> camera.getRaysIntersectionDistance();
 
+        
+
         for(int i = 0; i < this -> camera.rays.size(); ++i){
 
             float fixedDistance = Vector2Distance(this -> camera.rays[i]->start,this->camera.rays[i]->end ) * cos(  ((fov / 2.f) - (this -> camera.step) * (float)i) );
