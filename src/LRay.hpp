@@ -188,7 +188,7 @@ void Ray::updateLength(Ray& obstacle){
 
     auto intersectionInfo = this -> getSegmentIntersection(obstacle);
     Vector2 intersectionPos = std::get<1>(intersectionInfo);
-    std::cout << obstacle.getSmartPtr() << std::endl;
+    
     if(Vector2Distance(this -> end, intersectionPos) <= this -> length && std::get<0>(intersectionInfo)){
 
         this -> end = intersectionPos;

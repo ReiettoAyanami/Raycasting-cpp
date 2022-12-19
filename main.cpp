@@ -27,7 +27,7 @@ int main(void)
 
     InitWindow(width, screenHeight, "Raycaster LLLLL");
     
-    L::RayCaster caster = L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.01f, 500.f, BLACK};
+    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.01f, 500.f, BLACK});
 
     L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, screenWidth, screenHeight});
     
@@ -49,16 +49,16 @@ int main(void)
         float deltaTime = GetFrameTime();
 
         //std :: cout << obstacle2.isObstacle << std::endl;
-        caster.pointTo(GetMousePosition());
-        caster.follow(GetMousePosition(), 50.f, deltaTime);
+        caster -> pointTo(GetMousePosition());
+        caster -> follow(GetMousePosition(), 50.f, deltaTime);
     
-        caster.update(obstacle2);
-        caster.update(obstacle);
+        caster -> update(obstacle2);
+        caster -> update(obstacle);
 
         obstacle2.render();
         obstacle.render();
         renderer.render();
-        caster.render();
+        caster -> render();
 
         EndDrawing();
     }
