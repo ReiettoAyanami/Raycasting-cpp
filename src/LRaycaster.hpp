@@ -34,7 +34,7 @@ class RayCaster{
         void update(std::shared_ptr<L::Ray>);
         void update(std::vector<std::shared_ptr<L::Ray>>);
         void render();
-
+        void resetCollisions();
 
         RayCaster(Vector2, float, float, float, float, Color);
         ~RayCaster();
@@ -174,6 +174,15 @@ void RayCaster::update(std::vector<std::shared_ptr<L::Ray>> obstacles){
 
 }
 
+void RayCaster::resetCollisions(){
+
+    for(int i = 0; i < this -> rays.size(); ++i){
+
+        this -> rays[i] -> resetColliding();
+
+    }
+
+}
 
 void RayCaster::render(){
 

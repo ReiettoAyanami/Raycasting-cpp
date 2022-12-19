@@ -7,7 +7,9 @@
 
 #ifndef LRENDERER_HPP
     #define  LRENDERER_HPP
+    
 #define RAY_LENGTH_SHADOW_MODIFIER 0.1
+#define NULL_RES_COLOR Color{0,0,0,0}
 
 namespace L{
     class Renderer{
@@ -56,9 +58,6 @@ namespace L{
 
         auto step = this -> camera -> step;
         auto fov = this -> camera -> step * (float) this -> camera -> rays.size();
-        //auto rays = this -> camera -> getRaysIntersectionDistance();
-
-        
 
         for(int i = 0; i < this -> camera -> rays.size(); ++i){
 
@@ -67,9 +66,6 @@ namespace L{
 
             
             Color renderColor;
-
-
-            std::cout << camera -> rays[i]->getCollidingCurrent() << std::endl;
 
             if(this -> camera -> rays[i]->getCollidingCurrent() != nullptr){
 
@@ -82,8 +78,8 @@ namespace L{
             
             }else{
 
-                renderColor = Color{0,255,0,255};
-                continue;
+                renderColor = NULL_RES_COLOR;
+                
 
             }
 

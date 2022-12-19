@@ -25,18 +25,16 @@ int main(void)
 
     InitWindow(width, screenHeight, "Raycaster LLLLL");
     
-    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.01f, 500.f, BLACK});
+    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.005f, 500.f, BLACK});
 
     L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, screenWidth, screenHeight});
     
     std::shared_ptr<L::Ray> obstacle = std::make_shared<L::Ray>(L::Ray{Vector2{100.f,100.f}, Vector2{300.f,300.f}, true, RED});
     std::shared_ptr<L::Ray> obstacle2 = std::make_shared<L::Ray>(L::Ray(Vector2{200.f,100.f}, Vector2{400.f,300.f}, true, RED));
 
-    // Disappearing ptr when passing a ptr;
-
-    //SetTargetFPS(60);              
-
     
+    SetTargetFPS(60);              
+
     while (!WindowShouldClose())   
     {
         
@@ -46,14 +44,16 @@ int main(void)
         ClearBackground(WHITE);
         float deltaTime = GetFrameTime();
 
-        //std :: cout << obstacle2.isObstacle << std::endl;
+        
         caster -> pointTo(GetMousePosition());
         caster -> follow(GetMousePosition(), 50.f, deltaTime);
 
-        
-    
-        caster -> update(obstacle2);
+        caster -> resetCollisions();
+
         caster -> update(obstacle);
+        caster -> update(obstacle2);
+
+
 
         obstacle2-> render();
         obstacle -> render();

@@ -29,6 +29,7 @@ class Ray{
         std::shared_ptr<Ray> getCollidingCurrent();
         std::shared_ptr<Ray> getSmartPtr();
         void render();
+        void resetColliding();
         
         Ray();
         Ray(Vector2, Vector2, bool, Color);
@@ -79,7 +80,6 @@ Ray::~Ray(){
 
 }
 
-
 std::shared_ptr<Ray> Ray::getCollidingCurrent(){
 
     return this -> collidingCurrent;
@@ -126,7 +126,7 @@ std::tuple<bool, Vector2> Ray::getLineIntersection(std::shared_ptr<Ray> target){
 
     if(!target -> isObstacle) return std::make_tuple(false, L_NAN_VECTOR2);
     
-    std::cout << target << std::endl;
+    //std::cout << target << std::endl;
 
     bool isIntersecting = false;
 
@@ -156,8 +156,8 @@ std::tuple<bool, Vector2, std::shared_ptr<Ray>> Ray::getSegmentIntersection(std:
     if(!target -> isObstacle)
     {
         
-        this -> collidingCurrent = nullptr;   
-        return std::make_tuple(false, L_NAN_VECTOR2, this -> collidingCurrent);
+           
+        return std::make_tuple(false, L_NAN_VECTOR2, nullptr);
 
     }
 
@@ -168,15 +168,15 @@ std::tuple<bool, Vector2, std::shared_ptr<Ray>> Ray::getSegmentIntersection(std:
 
     if(((r0.x > 0.0 && r0.x < 1.0) || (r0.y > 0.0 && r0.y < 1.0)) && ((r1.x > 0.0 && r1.x < 1.0) || (r1.y > 0.0 && r1.y < 1.0))){
 
-        this -> collidingCurrent = target;
-        auto result = std::make_tuple(true, intersection, this -> getCollidingCurrent());
+        this -> collidingCurrent = target -> getSmartPtr();
+        auto result = std::make_tuple(true, intersection, this -> collidingCurrent);
         
         return result;
 
     }else{
 
-        this -> collidingCurrent = nullptr;
-        return std::make_tuple(false, L_NAN_VECTOR2, this -> collidingCurrent);
+        
+        return std::make_tuple(false, L_NAN_VECTOR2, nullptr);
         
     }
     
@@ -196,6 +196,13 @@ void Ray::updateLength(std::shared_ptr<Ray> obstacle){
     }
 
     
+
+}
+
+
+void Ray::resetColliding(){
+
+    this -> collidingCurrent = nullptr;
 
 }
 
