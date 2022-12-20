@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdlib.h>
 #include <time.h>
+#include "src/LWall.hpp"
 #include "src/LRaycaster.hpp"
 #include "src/LRay.hpp"
 #include "src/LRenderer.hpp"
@@ -21,16 +22,16 @@ int main(void)
     
     srand(0);
 
-    InitWindow(width, screenHeight, "Raycaster LLLLL");
+    InitWindow(width, screenHeight, "Raycaster");
     
     std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, M_PI_2, 500, 1000.f, BLACK});
-
-    L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, screenWidth, screenHeight});
+    std::shared_ptr<L::Wall> wall = std::make_shared<L::Wall>(L::Wall(Vector2{300.f, 300.f},10.f, 10.f, PI));
+    L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, width, screenHeight});
     
     Rectangle boundaries2dRect = Rectangle{0.f,0.f,(float)screenWidth, (float)screenHeight};
 
     std::vector<std::shared_ptr<L::Ray>> boundaries = L::generateRaysFromRect(boundaries2dRect, true, RED);
-    std::vector<std::shared_ptr<L::Ray>> block = L::generateRaysFromRect(Rectangle{100.0, 100.0, 100.0, 100.0}, true, BLUE);
+    //std::vector<std::shared_ptr<L::Ray>> block = L::generateRaysFromRect(Rectangle{100.0, 100.0, 100.0, 100.0}, true, BLUE);
 
     
     while (!WindowShouldClose())   
@@ -42,19 +43,12 @@ int main(void)
         ClearBackground(WHITE);
         DrawRectangleRec(Rectangle{screenWidth, 0, screenWidth, screenHeight}, BLACK);
         float deltaTime = GetFrameTime();
-        caster -> pointTo(GetMousePosition());
-        caster -> follow(GetMousePosition(), 50.f, deltaTime);
-
-        
         caster -> resetCollisions();
-        caster -> update(boundaries);
-        caster -> update(block);
-
-
-        std::cout << caster-> rays[0]->angle << std::endl;
-
+        //caster -> pointTo(GetMousePosition());
+        //caster -> follow(GetMousePosition(), 50.f, deltaTime);
         
-
+        caster -> update(boundaries);
+        //caster -> update(wall);
 
         for(auto& b : boundaries){
 
@@ -62,11 +56,7 @@ int main(void)
 
         }
 
-        for(auto& b : block){
-
-            b -> render();
-
-        }
+        wall -> render();    
         renderer.render();
         caster -> render();
 

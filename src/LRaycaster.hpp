@@ -5,6 +5,7 @@
 #include <memory>
 #include <iostream>
 #include "LRay.hpp"
+#include "LWall.hpp"
 
 
 
@@ -25,7 +26,7 @@ class RayCaster{
         Vector2 position;
         float rayLength;
         Color renderColor;
-        std::vector<std::shared_ptr<L::Ray>> rays;
+        std::vector<std::shared_ptr<Ray>> rays;
         
         float fov;
 
@@ -33,9 +34,10 @@ class RayCaster{
         void pointTo(Vector2);
         void follow(Vector2, float, float);
         std::vector<float> getRaysIntersectionDistance();
-        std::shared_ptr<L::Ray> getCollidingAt(int);
-        void update(std::shared_ptr<L::Ray>);
-        void update(std::vector<std::shared_ptr<L::Ray>>);
+        std::shared_ptr<Ray> getCollidingAt(int);
+        void update(std::shared_ptr<Ray>);
+        void update(std::vector<std::shared_ptr<Ray>>);
+        void update(std::shared_ptr<Wall>);
         void render();
         void resetCollisions();
 
@@ -68,8 +70,8 @@ RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov =
         x = .5f - ((float) i / (float) nRays);
         tAngle = atan2(x, focalLength);
         
-        L::Ray r = L::Ray(position, rayLength, angle + tAngle,false,renderColor);
-        this -> rays.push_back( std::make_shared<L::Ray>(r) );
+        Ray r = Ray(position, rayLength, angle + tAngle,false,renderColor);
+        this -> rays.push_back( std::make_shared<Ray>(r) );
 
     }
 
@@ -154,7 +156,7 @@ std::vector<float> RayCaster::getRaysIntersectionDistance(){
 
 
 //Returns the colliding ray of a given ray.
-std::shared_ptr<L::Ray> RayCaster::getCollidingAt(int index){
+std::shared_ptr<Ray> RayCaster::getCollidingAt(int index){
 
     
 
@@ -163,7 +165,7 @@ std::shared_ptr<L::Ray> RayCaster::getCollidingAt(int index){
 }
 
 //Updates every ray of the caster.
-void RayCaster::update(std::shared_ptr<L::Ray> obstacle){
+void RayCaster::update(std::shared_ptr<Ray> obstacle){
 
     for(auto& ray : this -> rays){
 
@@ -176,7 +178,7 @@ void RayCaster::update(std::shared_ptr<L::Ray> obstacle){
 }
 
 //Updates the caster.
-void RayCaster::update(std::vector<std::shared_ptr<L::Ray>> obstacles){
+void RayCaster::update(std::vector<std::shared_ptr<Ray>> obstacles){
 
     for(auto& obstacle : obstacles){
 
@@ -192,6 +194,25 @@ void RayCaster::update(std::vector<std::shared_ptr<L::Ray>> obstacles){
 
 
 }
+
+void RayCaster::update(std::shared_ptr<Wall> wall){
+
+    for(auto& obstacle : wall -> obstacles){
+
+        for(auto& ray: this -> rays){
+
+
+            ray -> updateLength( obstacle );
+
+        }
+
+
+    }
+
+
+}
+
+
 
 //Resets caster's collisions.
 void RayCaster::resetCollisions(){

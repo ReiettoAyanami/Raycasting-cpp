@@ -23,6 +23,8 @@ namespace L
         Color renderColor;
         float angle;
 
+        void setStart(Vector2);
+        void setEnd(Vector2);
         void adjustAngle(float);
         float pointTo(Vector2);
         std::tuple<bool, Vector2> getLineIntersection(std::shared_ptr<Ray>);
@@ -71,6 +73,8 @@ namespace L
 
         Vector2 end = Vector2{cos(angle) * length, -sin(angle) * length};
 
+        
+
         this->length = length;
         this->start = start;
         this->end = end;
@@ -110,7 +114,7 @@ namespace L
         this->end = Vector2Add(this->start, Vector2{cos(angle) * this->length, -sin(angle) * this->length});
     }
 
-    
+
     
     //Makes the angle point to a given position.
     float Ray::pointTo(Vector2 target)

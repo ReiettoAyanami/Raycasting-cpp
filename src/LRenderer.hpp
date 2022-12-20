@@ -10,7 +10,7 @@
     
 #define RAY_LENGTH_SHADOW_MODIFIER .01
 #define NULL_RES_COLOR Color{0,0,0,0}
-#define CONST_WALL_H 7000
+#define CONST_WALL_H 12000
 
 namespace L{
 
@@ -97,7 +97,7 @@ namespace L{
     
 
     }
-    
+
 }
 
 #endif
