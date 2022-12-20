@@ -6,6 +6,7 @@
 #include <memory>
 #include <stdlib.h>
 #include <time.h>
+#include "src/LWall.hpp"
 #include "src/LRaycaster.hpp"
 #include "src/LRay.hpp"
 #include "src/LRenderer.hpp"
@@ -18,45 +19,40 @@ int main(void)
     const int width = screenWidth * 2;
     const int height = screenHeight * 2;
     
-    // Fixed bug in LRay: Wrong collisions
-    
     
     srand(0);
 
-    InitWindow(width, screenHeight, "Raycaster LLLLL");
+    InitWindow(width, screenHeight, "Raycaster");
     
-    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.005f, 500.f, BLACK});
+    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, M_PI_2, 500, 1000.f, BLACK});
+    std::shared_ptr<L::Wall> wall = std::make_shared<L::Wall>(L::Wall(Vector2{300.f, 300.f},100.f, 10.f,PI, PURPLE));
+    L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, width, screenHeight});
+    Rectangle boundaries2dRect = Rectangle{0.f,0.f,(float)screenWidth, (float)screenHeight};
 
-    L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, screenWidth, screenHeight});
+    std::vector<std::shared_ptr<L::Ray>> boundaries = L::generateRaysFromRect(boundaries2dRect, true, RED);
     
-    std::shared_ptr<L::Ray> obstacle = std::make_shared<L::Ray>(L::Ray{Vector2{100.f,100.f}, Vector2{300.f,300.f}, true, RED});
-    std::shared_ptr<L::Ray> obstacle2 = std::make_shared<L::Ray>(L::Ray(Vector2{200.f,100.f}, Vector2{400.f,300.f}, true, RED));
 
     
-    SetTargetFPS(60);              
-
     while (!WindowShouldClose())   
-    {
-        
-        
+    {   
 
         BeginDrawing();
         ClearBackground(WHITE);
+        DrawRectangleRec(Rectangle{screenWidth, 0, screenWidth, screenHeight}, BLACK);
         float deltaTime = GetFrameTime();
-
-        
+        caster -> resetCollisions();
         caster -> pointTo(GetMousePosition());
         caster -> follow(GetMousePosition(), 50.f, deltaTime);
+        
+        caster -> update(boundaries);
+        caster -> update(wall);
 
-        caster -> resetCollisions();
+        for(auto& b : boundaries){
 
-        caster -> update(obstacle);
-        caster -> update(obstacle2);
+            b -> render();
 
-
-
-        obstacle2-> render();
-        obstacle -> render();
+        }
+        wall -> render();    
         renderer.render();
         caster -> render();
 
