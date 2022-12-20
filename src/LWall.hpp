@@ -32,16 +32,17 @@ Wall::Wall(Vector2 position, float width = DEFAULT_WALL_THICKNESS, float height 
 
     Ray p1 = Ray{position, width, angle, true, renderColor};
     
-    // Ray p2 = Ray(Vector2{position.x, position.y + height}, width, angle, true, renderColor);
-    // Ray p3(p1.start, p2.start, true, renderColor);
-    // Ray p4(p1.end, p2.end, true, renderColor);
+    // rework this
+    Ray p2 = Ray(Vector2{position.x + (height * -sin(angle)), position.y + (height * cos(angle))}, width, angle, true, renderColor);
+    Ray p3(p1.start, p2.start, true, renderColor);
+    Ray p4(p1.end, p2.end, true, renderColor);
 
-    
+   
 
     this -> obstacles.push_back(std::make_shared<Ray>(p1));
-    //this -> obstacles.push_back(std::make_shared<Ray>(p2));
-    // this -> obstacles.push_back(std::make_shared<Ray>(p3));
-    // this -> obstacles.push_back(std::make_shared<Ray>(p4));
+    this -> obstacles.push_back(std::make_shared<Ray>(p2));
+    this -> obstacles.push_back(std::make_shared<Ray>(p3));
+    this -> obstacles.push_back(std::make_shared<Ray>(p4));
 }
 
 void Wall::render(){

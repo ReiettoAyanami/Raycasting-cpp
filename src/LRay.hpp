@@ -71,13 +71,13 @@ namespace L
     Ray::Ray(Vector2 start, float length = 0.f, float angle = 0.f, bool isObstacle = true, Color renderColor = BLACK)
     {
 
-        Vector2 end = Vector2{cos(angle) * length, -sin(angle) * length};
+        //Vector2 end = Vector2{cos(angle) * length, -sin(angle) * length};
 
         
 
         this->length = length;
         this->start = start;
-        this->end = end;
+        this->end = Vector2{ start.x + cos(angle) * length, start.y + -sin(angle) * length};
         this->isObstacle = isObstacle;
         this->renderColor = renderColor;
         this->collidingCurrent = nullptr;
