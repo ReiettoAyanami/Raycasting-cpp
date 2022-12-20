@@ -40,6 +40,7 @@ class RayCaster{
         void update(std::shared_ptr<Wall>);
         void render();
         void resetCollisions();
+        void move(KeyboardKey, KeyboardKey, KeyboardKey, KeyboardKey, Vector2);
 
         RayCaster(Vector2, float, float, float, float, Color);
         RayCaster(Vector2, float, float, int, float, Color);
@@ -75,6 +76,7 @@ RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov =
 
     }
 
+
    this -> position = position;
    this -> rayLength = rayLength;
    this -> renderColor = renderColor;
@@ -103,6 +105,26 @@ void RayCaster::constrainTo(Rectangle boundaries){
 
 }
 
+void RayCaster::move(KeyboardKey up,  KeyboardKey down, KeyboardKey left, KeyboardKey right, Vector2 velocity){
+
+    this -> velocity = Vector2{0.f, 0.f};
+
+    if(IsKeyDown(up)) this -> velocity.y = -velocity.y;
+    if(IsKeyDown(down)) this -> velocity.y = velocity.y;
+    if(IsKeyDown(left)) this -> velocity.x = -velocity.x;
+    if(IsKeyDown(right)) this -> velocity.x = velocity.x;
+
+    this -> position = Vector2Add(this -> position, this -> velocity);
+
+
+    for(auto& ray : this -> rays){
+
+        ray -> start = this -> position;
+
+    }
+
+}
+
 //Updates the angle of all the rays to make the caster to look at a given position.
 void RayCaster::pointTo(Vector2 target){
 
@@ -116,8 +138,11 @@ void RayCaster::pointTo(Vector2 target){
         x = .5f - ((float) i / (float) this -> rays.size());
         tAngle = atan2(x, focalLength);
         this -> rays[i] -> adjustAngle(angle + tAngle + PI);
+
     }
 }
+
+
 
 //Makes the caster follow a given position and move until it reaches the position minus the offset.
 void RayCaster::follow(Vector2 target, float offset, float deltaTime){
