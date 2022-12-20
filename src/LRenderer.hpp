@@ -13,6 +13,8 @@
 #define CONST_WALL_H 7000
 
 namespace L{
+
+    //A class which renders a Casters pov.
     class Renderer{
 
         public:
@@ -32,7 +34,7 @@ namespace L{
 
 
     };
-
+    //Constructor.
     Renderer::Renderer(std::shared_ptr<L::RayCaster> camera, Rectangle renderRegion){
 
         this -> renderRegion = renderRegion;
@@ -40,14 +42,14 @@ namespace L{
 
     }
 
-
+    //Destructor.
     Renderer::~Renderer(){
 
 
 
     }
 
-
+    //Render a Rectangle at a given scan.
     void Renderer::renderRectangleAtScan(int scanIdx, int scanHeight, Color renderColor){
 
         float scanWidth = this -> renderRegion.width / this -> camera -> rays.size();
@@ -55,6 +57,8 @@ namespace L{
 
     }
 
+
+    //Renders the whole camera pov.
     void Renderer::render(){
 
         
@@ -93,6 +97,7 @@ namespace L{
     
 
     }
+    
 }
 
 #endif

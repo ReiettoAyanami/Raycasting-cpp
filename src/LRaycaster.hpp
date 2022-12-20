@@ -16,6 +16,8 @@
 
 namespace L{
 
+//Class which represents a collection of Rays that act like a collectiveness.
+
 class RayCaster{
 
     public:
@@ -53,6 +55,7 @@ class RayCaster{
 
 };
 
+//Constructor.
 RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov = 60.f, int nRays = 100, float rayLength = 50.f, Color renderColor = BLACK){
 
     float focalLength = (1.f / tan(fov / 2.f));
@@ -81,10 +84,12 @@ RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov =
 
 }
 
-
+//Destructor.
 RayCaster::~RayCaster(){
 }
 
+
+//Constrains the caster to some given boundaries.
 void RayCaster::constrainTo(Rectangle boundaries){
 
     if(!CheckCollisionPointRec(this -> position, boundaries)){
@@ -96,6 +101,7 @@ void RayCaster::constrainTo(Rectangle boundaries){
 
 }
 
+//Updates the angle of all the rays to make the caster to look at a given position.
 void RayCaster::pointTo(Vector2 target){
 
     float angle = getAngleBetween(this -> position, target);
@@ -111,6 +117,7 @@ void RayCaster::pointTo(Vector2 target){
     }
 }
 
+//Makes the caster follow a given position and move until it reaches the position minus the offset.
 void RayCaster::follow(Vector2 target, float offset, float deltaTime){
 
     float distance = Vector2Distance(this -> position, target);
@@ -131,6 +138,7 @@ void RayCaster::follow(Vector2 target, float offset, float deltaTime){
 
 }
 
+//Returns the length of every ray.
 std::vector<float> RayCaster::getRaysIntersectionDistance(){
 
     std::vector<float> distances;
@@ -144,6 +152,8 @@ std::vector<float> RayCaster::getRaysIntersectionDistance(){
     return distances;
 }   
 
+
+//Returns the colliding ray of a given ray.
 std::shared_ptr<L::Ray> RayCaster::getCollidingAt(int index){
 
     
@@ -152,6 +162,7 @@ std::shared_ptr<L::Ray> RayCaster::getCollidingAt(int index){
 
 }
 
+//Updates every ray of the caster.
 void RayCaster::update(std::shared_ptr<L::Ray> obstacle){
 
     for(auto& ray : this -> rays){
@@ -164,6 +175,7 @@ void RayCaster::update(std::shared_ptr<L::Ray> obstacle){
 
 }
 
+//Updates the caster.
 void RayCaster::update(std::vector<std::shared_ptr<L::Ray>> obstacles){
 
     for(auto& obstacle : obstacles){
@@ -181,6 +193,7 @@ void RayCaster::update(std::vector<std::shared_ptr<L::Ray>> obstacles){
 
 }
 
+//Resets caster's collisions.
 void RayCaster::resetCollisions(){
 
     for(int i = 0; i < this -> rays.size(); ++i){
@@ -191,6 +204,7 @@ void RayCaster::resetCollisions(){
 
 }
 
+//Renders the caster.
 void RayCaster::render(){
 
 
@@ -201,5 +215,9 @@ void RayCaster::render(){
     }
 
 }
+
+    typedef RayCaster Caster;
+    typedef RayCaster Camera;
+
 }
 #endif

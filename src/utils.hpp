@@ -7,10 +7,13 @@
 #define L_NAN_VECTOR2 Vector2{NAN, NAN}
 #define NULL_LRAY LRay(Vector2{NAN, NAN}, Vector2{NAN, NAN}, false, BLACK)
 
+// Returns the sign of a number.
 template<typename T> int sgn(T v) {
   return (v < 0) ? -1 : ((v > 0) ? 1 : 0);
 }
 
+
+// Returns the angle between 2 given positions.
 float getAngleBetween(Vector2 p0, Vector2 p1){
 
     auto delta = Vector2Subtract(p0, p1);

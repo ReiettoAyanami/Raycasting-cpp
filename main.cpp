@@ -18,8 +18,6 @@ int main(void)
     const int width = screenWidth * 2;
     const int height = screenHeight * 2;
     
-    // Fixed bug in LRay: Wrong collisions
-    
     
     srand(0);
 
@@ -34,10 +32,6 @@ int main(void)
     std::vector<std::shared_ptr<L::Ray>> boundaries = L::generateRaysFromRect(boundaries2dRect, true, RED);
     std::vector<std::shared_ptr<L::Ray>> block = L::generateRaysFromRect(Rectangle{100.0, 100.0, 100.0, 100.0}, true, BLUE);
 
-    // Disappearing ptr when passing a ptr;
-
-    //SetTargetFPS(60);
-
     
     while (!WindowShouldClose())   
     {
@@ -48,8 +42,6 @@ int main(void)
         ClearBackground(WHITE);
         DrawRectangleRec(Rectangle{screenWidth, 0, screenWidth, screenHeight}, BLACK);
         float deltaTime = GetFrameTime();
-
-        //std :: cout << obstacle2.isObstacle << std::endl;
         caster -> pointTo(GetMousePosition());
         caster -> follow(GetMousePosition(), 50.f, deltaTime);
 
