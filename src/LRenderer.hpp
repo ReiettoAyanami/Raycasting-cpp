@@ -8,8 +8,9 @@
 #ifndef LRENDERER_HPP
     #define  LRENDERER_HPP
     
-#define RAY_LENGTH_SHADOW_MODIFIER 0.1
+#define RAY_LENGTH_SHADOW_MODIFIER .01
 #define NULL_RES_COLOR Color{0,0,0,0}
+#define CONST_WALL_H 7000
 
 namespace L{
     class Renderer{
@@ -56,13 +57,14 @@ namespace L{
 
     void Renderer::render(){
 
-        auto step = this -> camera -> step;
-        auto fov = this -> camera -> step * (float) this -> camera -> rays.size();
+        
 
         for(int i = 0; i < this -> camera -> rays.size(); ++i){
+            
+            float focalAngle = this -> camera -> rays[i] -> angle -(this -> camera -> rays[0] -> angle - (this -> camera -> fov / 2.f));
 
-            float fixedDistance = Vector2Distance(this -> camera -> rays[i]->start,this->camera -> rays[i]->end ) * cos(  ((fov / 2.f) - (this -> camera -> step) * (float)i) );
-            float rectangleHeight = this -> renderRegion.height - fixedDistance;
+            float fixedDistance = Vector2Distance(this -> camera -> rays[i]->start,this->camera -> rays[i]->end ) * cos( focalAngle );
+            float rectangleHeight = CONST_WALL_H / fixedDistance;
 
             
             Color renderColor;

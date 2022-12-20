@@ -24,7 +24,8 @@ class RayCaster{
         float rayLength;
         Color renderColor;
         std::vector<std::shared_ptr<L::Ray>> rays;
-        float step;
+        
+        float fov;
 
         void constrainTo(Rectangle);
         void pointTo(Vector2);
@@ -37,6 +38,7 @@ class RayCaster{
         void resetCollisions();
 
         RayCaster(Vector2, float, float, float, float, Color);
+        RayCaster(Vector2, float, float, int, float, Color);
         ~RayCaster();
 
 
@@ -51,16 +53,20 @@ class RayCaster{
 
 };
 
-RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov = 60.f, float step = 1.f, float rayLength = 50.f, Color renderColor = BLACK){
+RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov = 60.f, int nRays = 100, float rayLength = 50.f, Color renderColor = BLACK){
 
-    
-    const long int numIterations = (long int)(fov / step);
+    float focalLength = (1.f / tan(fov / 2.f));
+    float x = 0.f;
+    float tAngle;
+    float angle = startingAngle - (fov / 2.f);
 
-    for(int i = 0; i < numIterations; ++i){
-
-        float angle = startingAngle - (step * (float)i);
-        L::Ray tempRay = L::Ray{position,rayLength, angle, false, renderColor};
-        this -> rays.push_back(std::make_shared<L::Ray>(tempRay));
+    for(int i = 0; i < nRays; ++i){
+        
+        x = .5f - ((float) i / (float) nRays);
+        tAngle = atan2(x, focalLength);
+        
+        L::Ray r = L::Ray(position, rayLength, angle + tAngle,false,renderColor);
+        this -> rays.push_back( std::make_shared<L::Ray>(r) );
 
     }
 
@@ -69,11 +75,12 @@ RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov =
    this -> renderColor = renderColor;
    this -> hitboxSize = DEFAULT_HITBOX_SIZE;
    this -> startingAngle = startingAngle; 
-   this -> step = step;
+   this -> fov = fov;
    this -> velocity = Vector2{0.f, 0.f};
 
 
 }
+
 
 RayCaster::~RayCaster(){
 }
@@ -91,17 +98,17 @@ void RayCaster::constrainTo(Rectangle boundaries){
 
 void RayCaster::pointTo(Vector2 target){
 
-    float fov = this -> step * ((float)(this -> rays.size()) - 1.f);
-    float relativeAngle = fov / 2.f;
+    float angle = getAngleBetween(this -> position, target);
+    float focalLength = (1.f / tan(this -> fov / 2.f)) / 2.f;
+    float x = 0;
+    float tAngle;
 
-    for(auto& ray : this -> rays){
+    for(int i = 0; i < this -> rays.size(); ++i){
 
-        float angle = relativeAngle + getAngleBetween(target, ray -> start);
-        relativeAngle -= this -> step;
-        ray -> adjustAngle(angle);
-
+        x = .5f - ((float) i / (float) this -> rays.size());
+        tAngle = atan2(x, focalLength);
+        this -> rays[i] -> adjustAngle(angle + tAngle + PI);
     }
-
 }
 
 void RayCaster::follow(Vector2 target, float offset, float deltaTime){

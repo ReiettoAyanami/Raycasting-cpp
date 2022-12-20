@@ -25,16 +25,20 @@ int main(void)
 
     InitWindow(width, screenHeight, "Raycaster LLLLL");
     
-    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, 1.0472, 0.005f, 500.f, BLACK});
+    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, M_PI_2, 500, 1000.f, BLACK});
 
     L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, screenWidth, screenHeight});
     
-    std::shared_ptr<L::Ray> obstacle = std::make_shared<L::Ray>(L::Ray{Vector2{100.f,100.f}, Vector2{300.f,300.f}, true, RED});
-    std::shared_ptr<L::Ray> obstacle2 = std::make_shared<L::Ray>(L::Ray(Vector2{200.f,100.f}, Vector2{400.f,300.f}, true, RED));
+    Rectangle boundaries2dRect = Rectangle{0.f,0.f,(float)screenWidth, (float)screenHeight};
+
+    std::vector<std::shared_ptr<L::Ray>> boundaries = L::generateRaysFromRect(boundaries2dRect, true, RED);
+    std::vector<std::shared_ptr<L::Ray>> block = L::generateRaysFromRect(Rectangle{100.0, 100.0, 100.0, 100.0}, true, BLUE);
+
+    // Disappearing ptr when passing a ptr;
+
+    //SetTargetFPS(60);
 
     
-    SetTargetFPS(60);              
-
     while (!WindowShouldClose())   
     {
         
@@ -42,21 +46,35 @@ int main(void)
 
         BeginDrawing();
         ClearBackground(WHITE);
+        DrawRectangleRec(Rectangle{screenWidth, 0, screenWidth, screenHeight}, BLACK);
         float deltaTime = GetFrameTime();
 
-        
+        //std :: cout << obstacle2.isObstacle << std::endl;
         caster -> pointTo(GetMousePosition());
         caster -> follow(GetMousePosition(), 50.f, deltaTime);
 
+        
         caster -> resetCollisions();
-
-        caster -> update(obstacle);
-        caster -> update(obstacle2);
-
+        caster -> update(boundaries);
+        caster -> update(block);
 
 
-        obstacle2-> render();
-        obstacle -> render();
+        std::cout << caster-> rays[0]->angle << std::endl;
+
+        
+
+
+        for(auto& b : boundaries){
+
+            b -> render();
+
+        }
+
+        for(auto& b : block){
+
+            b -> render();
+
+        }
         renderer.render();
         caster -> render();
 

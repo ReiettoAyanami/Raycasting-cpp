@@ -18,6 +18,7 @@ class Ray{
         bool isObstacle;
         float length;
         Color renderColor;
+        float angle;
 
 
 
@@ -49,6 +50,10 @@ Ray::Ray(){}
 
 Ray::Ray(Vector2 start, Vector2 end, bool isObstacle = false, Color renderColor = BLACK){
 
+    const Vector2 delta = Vector2Subtract(start, end);
+    const float m = -delta.y / delta.x;
+    const float angle = atan(m);
+
     
     this -> start = start;
     this -> end = end;
@@ -57,6 +62,8 @@ Ray::Ray(Vector2 start, Vector2 end, bool isObstacle = false, Color renderColor 
     this -> collidingCurrent = nullptr;
     this -> isObstacle = isObstacle;
     this -> smartPtr = std::make_shared<Ray>(*this);
+    this -> angle = angle;
+
 
 }
 
@@ -71,6 +78,7 @@ Ray::Ray(Vector2 start, float length = 0.f, float angle = 0.f, bool isObstacle =
     this -> renderColor = renderColor;
     this -> collidingCurrent = nullptr;
     this -> smartPtr = std::make_shared<Ray>(*this);
+    this -> angle = angle;
 
 }
 
@@ -96,7 +104,7 @@ std::shared_ptr<Ray> Ray::getSmartPtr(){
 
 void Ray::adjustAngle(float angle){
 
-
+    this -> angle = angle;
     this -> end = Vector2Add(this -> start, Vector2{cos(angle) * this -> length, -sin(angle) * this -> length});
 }
 
@@ -106,6 +114,8 @@ float Ray::pointTo(Vector2 target){
     Vector2 deltaPos = Vector2Subtract(target, this -> start);
     const float m = -deltaPos.y / deltaPos.x;
     float angle = atan(m);
+
+    
 
     if(deltaPos.x < 0.f){
 
@@ -118,6 +128,8 @@ float Ray::pointTo(Vector2 target){
 
     this -> end = Vector2Add(this -> start, Vector2{cos(angle) * this -> length, -sin(angle) * this -> length});
 
+    this -> angle = angle;
+    
     return angle;
 
 }
@@ -212,7 +224,25 @@ void Ray::render(){
 
 }
 
+
+std::vector<std::shared_ptr<Ray>> generateRaysFromRect(Rectangle rect, bool generateAsObstacles = true, Color renderColor = BLACK){  
+
+    std::vector<std::shared_ptr<Ray>> boundaries;
+
+    boundaries.push_back(std::make_shared<Ray>(Vector2{rect.x, rect.y}, Vector2{rect.x + rect.width, rect.y}, generateAsObstacles, renderColor));
+    boundaries.push_back(std::make_shared<Ray>(Vector2{rect.x + rect.width, rect.y}, Vector2{rect.x + rect.width, rect.y + rect.height}, generateAsObstacles, renderColor));
+    boundaries.push_back(std::make_shared<Ray>(Vector2{rect.x + rect.width, rect.y + rect.height}, Vector2{rect.x, rect.y + rect.height}, generateAsObstacles, renderColor));
+    boundaries.push_back(std::make_shared<Ray>(Vector2{rect.x, rect.y + rect.height}, Vector2{rect.x, rect.y}, generateAsObstacles, renderColor));
+
+    return boundaries;
+
 }
+
+}
+
+
+
+
 
 #endif
 
