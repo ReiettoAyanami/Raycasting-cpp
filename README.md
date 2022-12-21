@@ -11,3 +11,9 @@ after running the command above just type:
 ```./a.out```
 
 I've never ran this on windows nor MacOs.
+
+# Difference from the Rust raycasting project.
+
+- Now rays can be rendered with different colors.
+- No fisheye effect.
+- Added a Wall class.
