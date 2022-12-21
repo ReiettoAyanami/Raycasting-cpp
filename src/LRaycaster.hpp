@@ -41,6 +41,8 @@ class RayCaster{
         void render();
         void resetCollisions();
         void move(KeyboardKey, Vector2, Vector2, float);
+        void moveVisual(KeyboardKey, KeyboardKey, float);
+        void moveVisual(float, float, float );
 
         RayCaster(Vector2, float, float, float, float, Color);
         RayCaster(Vector2, float, float, int, float, Color);
@@ -76,7 +78,6 @@ RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov =
 
     }
 
-
    this -> position = position;
    this -> rayLength = rayLength;
    this -> renderColor = renderColor;
@@ -99,6 +100,38 @@ void RayCaster::constrainTo(Rectangle boundaries){
     if(!CheckCollisionPointRec(this -> position, boundaries)){
 
         this -> position = Vector2Subtract(this -> position, this -> velocity);
+
+    }
+
+
+}
+
+void RayCaster::moveVisual(KeyboardKey left, KeyboardKey right, float step){
+
+    bool l = IsKeyDown(left);
+    bool r = IsKeyDown(right);
+
+
+    for(auto& ray : this -> rays){
+
+        ray -> adjustAngle(ray -> angle + (step * (float)l));
+        ray -> adjustAngle(ray -> angle - (step * (float)r));
+
+    }
+
+
+}
+
+void RayCaster::moveVisual(float mousePos, float windowWidth, float maxOffset = PI * 2){
+
+    
+    
+    float angleOffset = map_value<float>(std::make_pair(0.f, windowWidth), std::make_pair(0.f, maxOffset), mousePos);
+
+    for(auto& ray : this -> rays){
+
+        ray -> adjustAngle(ray -> angle + angleOffset);
+
 
     }
 

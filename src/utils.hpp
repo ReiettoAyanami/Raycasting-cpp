@@ -25,6 +25,23 @@ float getAngleBetween(Vector2 p0, Vector2 p1){
     return angle;
 }
 
+
+// from rosettacode.
+template<typename tVal>
+tVal map_value(std::pair<tVal,tVal> a, std::pair<tVal, tVal> b, tVal inVal)
+{
+  tVal inValNorm = inVal - a.first;
+  tVal aUpperNorm = a.second - a.first;
+  tVal normPosition = inValNorm / aUpperNorm;
+
+  tVal bUpperNorm = b.second - b.first;
+  tVal bValNorm = normPosition * bUpperNorm;
+  tVal outVal = b.first + bValNorm;
+
+  return outVal;
+}
+
+
 #endif
 
 
