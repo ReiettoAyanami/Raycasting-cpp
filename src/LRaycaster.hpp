@@ -40,7 +40,7 @@ class RayCaster{
         void update(std::shared_ptr<Wall>);
         void render();
         void resetCollisions();
-        void move(KeyboardKey, KeyboardKey, KeyboardKey, KeyboardKey, Vector2);
+        void move(KeyboardKey, Vector2, Vector2, float);
 
         RayCaster(Vector2, float, float, float, float, Color);
         RayCaster(Vector2, float, float, int, float, Color);
@@ -105,22 +105,25 @@ void RayCaster::constrainTo(Rectangle boundaries){
 
 }
 
-void RayCaster::move(KeyboardKey up,  KeyboardKey down, KeyboardKey left, KeyboardKey right, Vector2 velocity){
+void RayCaster::move(KeyboardKey up, Vector2 velocity, Vector2 mousePos, float offset){
+    
 
     this -> velocity = Vector2{0.f, 0.f};
 
-    if(IsKeyDown(up)) this -> velocity.y = -velocity.y;
-    if(IsKeyDown(down)) this -> velocity.y = velocity.y;
-    if(IsKeyDown(left)) this -> velocity.x = -velocity.x;
-    if(IsKeyDown(right)) this -> velocity.x = velocity.x;
+    if(Vector2Distance(this -> position, mousePos) >= offset){
 
-    this -> position = Vector2Add(this -> position, this -> velocity);
 
+        if(IsKeyDown(up)) this -> velocity = Vector2Multiply(velocity, Vector2{cos(this -> rays[this -> rays.size() / 2] -> angle), -sin(this -> rays[this -> rays.size() / 2] -> angle)});
+
+        this -> position = Vector2Add(this -> position, this -> velocity);
+    
+    }
 
     for(auto& ray : this -> rays){
 
-        ray -> start = this -> position;
-
+        ray -> start = Vector2Add(ray -> start, this -> velocity);
+        ray -> end  = Vector2Add(ray -> end, this -> velocity);
+        ray -> adjustAngle(ray -> angle);
     }
 
 }
