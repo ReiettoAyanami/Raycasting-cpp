@@ -1,5 +1,7 @@
 # Raycasting-cpp
 Raycasting visualizer made in C++ and Raylib. Just an adaptation of the raycaster i did a few months ago, i will do a serious re-work or maybe just a total re-do of the original raycaster in Rust.
+
+[Rust version](https://github.com/ReiettoAyanami/Raycasting-rs)
 # Build:
 You'll need [raylib](https://github.com/raysan5/raylib) to run this.
 I use the g++ compiler on ubuntu. This is the command i run to get the `.out` file:
