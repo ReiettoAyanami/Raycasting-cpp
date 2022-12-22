@@ -17,3 +17,6 @@ I've never ran this on windows nor MacOs.
 - Now rays can be rendered with different colors.
 - No fisheye effect.
 - Added a Wall class.
+
+### Special thanks
+@[Masismo Sandretti](https://github.com/MassimoSandre) for helping to fix some memory related bugs, and helping to fix the fisheye effect.
