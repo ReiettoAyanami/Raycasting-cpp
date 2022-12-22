@@ -8,7 +8,7 @@
 #ifndef LRENDERER_HPP
     #define  LRENDERER_HPP
     
-#define RAY_LENGTH_SHADOW_MODIFIER .001
+#define RAY_LENGTH_SHADOW_MODIFIER .05
 #define NULL_RES_COLOR Color{0,0,0,0}
 #define CONST_WALL_H 12000
 
@@ -79,7 +79,7 @@ namespace L{
                 Quaternion collidingQuaternion = ColorNormalize(collidingRenderColor);
 
 
-                Quaternion normalizedColor = QuaternionNormalize(Vector4{std::min(1.f, (float)(collidingQuaternion.x / (Vector2Distance(this -> camera -> rays[i] -> start, this -> camera -> rays[i] -> end) * RAY_LENGTH_SHADOW_MODIFIER))),std::min(1.f, (float)(collidingQuaternion.y / (Vector2Distance(this -> camera -> rays[i] -> start, this -> camera -> rays[i] -> end) * RAY_LENGTH_SHADOW_MODIFIER))),std::min(1.f, (float)(collidingQuaternion.z / (Vector2Distance(this -> camera -> rays[i] -> start, this -> camera -> rays[i] -> end) * RAY_LENGTH_SHADOW_MODIFIER))),1.f});
+                Quaternion normalizedColor = QuaternionNormalize(Vector4{std::min(collidingQuaternion.x, (float)(collidingQuaternion.x / (Vector2Distance(this -> camera -> rays[i] -> start, this -> camera -> rays[i] -> end) * RAY_LENGTH_SHADOW_MODIFIER))),std::min(collidingQuaternion.y, (float)(collidingQuaternion.y / (Vector2Distance(this -> camera -> rays[i] -> start, this -> camera -> rays[i] -> end) * RAY_LENGTH_SHADOW_MODIFIER))),std::min(collidingQuaternion.z, (float)(collidingQuaternion.z / (Vector2Distance(this -> camera -> rays[i] -> start, this -> camera -> rays[i] -> end) * RAY_LENGTH_SHADOW_MODIFIER))),1.f});
                 renderColor = ColorFromNormalized(normalizedColor);
             
             }else{

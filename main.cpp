@@ -11,12 +11,7 @@
 #include "src/LRay.hpp"
 #include "src/LRenderer.hpp"
 
-/*
 
-(TODO)
-Fix bug that doesn't allow rays to not update after setting `start` to another value.
-
-*/
 
 int main(void)
 {
@@ -32,8 +27,9 @@ int main(void)
     srand(0);
 
     InitWindow(width, screenHeight, "Raycaster");
+   
     
-    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, M_PI_2, 200, 1000.f, BLACK});
+    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, M_PI_2, 800, 1000.f, BLACK});
     std::shared_ptr<L::Wall> wall = std::make_shared<L::Wall>(L::Wall(Vector2{300.f, 300.f},100.f, 10.f,PI, PURPLE));
     L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, screenWidth, screenHeight});
     Rectangle boundaries2dRect = Rectangle{0.f,0.f,(float)screenWidth, (float)screenHeight};
