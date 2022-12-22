@@ -20,5 +20,7 @@ I've never ran this on windows nor MacOs.
 
 # Special thanks
 [@Masismo Sandretti](https://github.com/MassimoSandre) for helping to fix some memory related bugs, and helping to fix the fisheye effect.
+
 [@_alerollo_](https://www.instagram.com/_alerollo_) for giving moral support throughout the making of the project (He was looking at TikToks and playing online chess).
+
 My psichiatrist for the idea and for telling me everything's alright.
