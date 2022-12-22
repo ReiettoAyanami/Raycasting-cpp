@@ -24,7 +24,7 @@ I've never ran this on windows nor MacOs.
 [![Mh something went wrong ig](https://github.com/ReiettoAyanami/Raycasting-cpp/blob/main/videoThumb.png?raw=true)](https://youtu.be/e5O7VMGqcTY)
 
 # Special thanks
-[@Masismo Sandretti](https://github.com/MassimoSandre) for helping to fix some memory related bugs, and helping to fix the fisheye effect.
+[@Massimo Sandretti](https://github.com/MassimoSandre) for helping to fix some memory related bugs, and helping to fix the fisheye effect.
 
 [@Alessandro Rollone](https://www.instagram.com/_alerollo_) for giving moral support throughout the making of the project (He was looking at TikToks and playing online chess).
 
