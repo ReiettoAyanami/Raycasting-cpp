@@ -27,7 +27,6 @@ class RayCaster{
         float rayLength;
         Color renderColor;
         std::vector<std::shared_ptr<Ray>> rays;
-        
         float fov;
 
         void constrainTo(Rectangle);
@@ -43,6 +42,7 @@ class RayCaster{
         void move(KeyboardKey, Vector2, Vector2, float);
         void moveVisual(KeyboardKey, KeyboardKey, float);
         void moveVisual(float, float, float );
+        void renderFOV();
 
         RayCaster(Vector2, float, float, float, float, Color);
         RayCaster(Vector2, float, float, int, float, Color);
@@ -89,7 +89,7 @@ RayCaster::RayCaster(Vector2 position, float startingAngle = M_PI_2, float fov =
 
 }
 
-//Destructor.
+//Destructor.renderingHeightMultiplier
 RayCaster::~RayCaster(){
 }
 
@@ -106,6 +106,7 @@ void RayCaster::constrainTo(Rectangle boundaries){
 
 }
 
+//Moves camera with two keys
 void RayCaster::moveVisual(KeyboardKey left, KeyboardKey right, float step){
 
     bool l = IsKeyDown(left);
@@ -122,6 +123,7 @@ void RayCaster::moveVisual(KeyboardKey left, KeyboardKey right, float step){
 
 }
 
+//Moves visual based on x mouse position on the screen.
 void RayCaster::moveVisual(float mousePos, float windowWidth, float maxOffset = PI * 2){
 
     
@@ -138,6 +140,7 @@ void RayCaster::moveVisual(float mousePos, float windowWidth, float maxOffset = 
 
 }
 
+//Moves the caster in the 2D space.
 void RayCaster::move(KeyboardKey up, Vector2 velocity, Vector2 mousePos, float offset){
     
 
@@ -232,8 +235,6 @@ void RayCaster::update(std::shared_ptr<Ray> obstacle){
 
         ray -> updateLength( obstacle );
 
-        
-
     }
 
 }
@@ -295,6 +296,19 @@ void RayCaster::render(){
         ray -> render();
 
     }
+
+}
+
+void RayCaster::renderFOV(){
+
+    for(int i = 0; i < this -> rays.size() - 1; ++i){
+
+        DrawLineV(this -> rays[i] -> end, this -> rays[i+1] -> end, this -> rays[i] -> renderColor);
+
+    }
+
+    this -> rays [0] -> render();
+    this -> rays[this -> rays.size() - 1] -> render();
 
 }
 

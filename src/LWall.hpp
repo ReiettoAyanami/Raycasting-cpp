@@ -55,6 +55,8 @@ void Wall::render(){
 
 }
 
+typedef Wall Box;
+
 }
 
 

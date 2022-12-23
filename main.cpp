@@ -4,8 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include <stdlib.h>
-#include <time.h>
 #include "src/LWall.hpp"
 #include "src/LRaycaster.hpp"
 #include "src/LRay.hpp"
@@ -20,19 +18,25 @@ int main(void)
 
     const int width = screenWidth * 2;
     const int height = screenHeight * 2;
-    
-
-    
-
-    srand(0);
 
     InitWindow(width, screenHeight, "Raycaster");
    
     
-    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, M_PI_2, M_PI_2, 800, 1000.f, BLACK});
-    std::shared_ptr<L::Wall> wall = std::make_shared<L::Wall>(L::Wall(Vector2{300.f, 300.f},100.f, 10.f,PI, PURPLE));
+    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, PI / 2,PI / 2, 8000, 500.f, BLACK});
+    //std::shared_ptr<L::Wall> wall = std::make_shared<L::Wall>(L::Wall(Vector2{300.f, 300.f},100.f, 10.f,PI, PURPLE));
     L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, screenWidth, screenHeight});
     Rectangle boundaries2dRect = Rectangle{0.f,0.f,(float)screenWidth, (float)screenHeight};
+
+    std::vector<std::shared_ptr<L::Ray>> rRays;
+
+    for(int i = 0; i < 10; ++i){
+
+        L::Ray temp(Vector2{(float)GetRandomValue(0, screenWidth), (float)GetRandomValue(0, screenHeight)}, (float)GetRandomValue(50,200),(float)GetRandomValue(0,100) / 100.f * 2 * PI, true, PURPLE);
+
+        rRays.push_back(std::make_shared<L::Ray>(temp));
+
+    } 
+
 
     std::vector<std::shared_ptr<L::Ray>> boundaries = L::generateRaysFromRect(boundaries2dRect, true, RED);
     
@@ -50,19 +54,25 @@ int main(void)
         //     caster -> pointTo(GetMousePosition());
         
         //caster -> moveVisual(KEY_A, KEY_D, .01);
-        caster -> moveVisual(-GetMouseDelta().x, screenWidth, PI * 2);
-        caster -> move(KEY_W, Vector2{200.f * deltaTime, 200.f * deltaTime}, GetMousePosition(), 50.f);
+        //caster -> moveVisual(-GetMouseDelta().x, screenWidth, PI * 2);
+        //caster -> move(KEY_W, Vector2{200.f * deltaTime, 200.f * deltaTime}, GetMousePosition(), 50.f);
+        caster -> pointTo(GetMousePosition());
+        caster -> follow(GetMousePosition(),50.f, deltaTime);
         caster -> update(boundaries);
-        caster -> update(wall);
+        caster -> update(rRays);
         
+        for(auto& r : rRays){
 
+            r -> render();
+
+        }
 
         for(auto& b : boundaries){
 
             b -> render();
 
         }
-        wall -> render();    
+        //wall -> render();    
         renderer.render();
         caster -> render();
 

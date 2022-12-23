@@ -22,6 +22,7 @@ namespace L
         float length;
         Color renderColor;
         float angle;
+        
 
         void setStart(Vector2);
         void setEnd(Vector2);
@@ -34,6 +35,7 @@ namespace L
         std::shared_ptr<Ray> getSmartPtr();
         void render();
         void resetColliding();
+        
 
         Ray();
         Ray(Vector2, Vector2, bool, Color);
@@ -43,6 +45,7 @@ namespace L
     private:
         std::shared_ptr<Ray> smartPtr;
         std::shared_ptr<Ray> collidingCurrent;
+        float renderingHeightMultiplier;
     };
 
     Ray::Ray() {}
@@ -64,16 +67,13 @@ namespace L
         this->isObstacle = isObstacle;
         this->smartPtr = std::make_shared<Ray>(*this);
         this->angle = angle;
+        
     }
 
 
     //constructs the class given a position and an angle.
     Ray::Ray(Vector2 start, float length = 0.f, float angle = 0.f, bool isObstacle = true, Color renderColor = BLACK)
-    {
-
-        //Vector2 end = Vector2{cos(angle) * length, -sin(angle) * length};
-
-        
+    {   
 
         this->length = length;
         this->start = start;
@@ -83,6 +83,7 @@ namespace L
         this->collidingCurrent = nullptr;
         this->smartPtr = std::make_shared<Ray>(*this);
         this->angle = angle;
+        
     }
 
     //destructor.
