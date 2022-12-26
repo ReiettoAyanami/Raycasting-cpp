@@ -19,10 +19,11 @@ int main(void)
     const int width = screenWidth * 2;
     const int height = screenHeight * 2;
 
-    InitWindow(width, screenHeight, "Raycaster");
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    InitWindow(width, screenHeight, "Raycaster C++");
    
     
-    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, PI / 2,PI / 2, 8000, 500.f, BLACK});
+    std::shared_ptr<L::RayCaster> caster = std::make_shared<L::RayCaster>(L::RayCaster{Vector2{screenWidth / 2.f,screenHeight / 2.f}, PI / 2,PI / 2, 800, 1000.f, WHITE});
     //std::shared_ptr<L::Wall> wall = std::make_shared<L::Wall>(L::Wall(Vector2{300.f, 300.f},100.f, 10.f,PI, PURPLE));
     L::Renderer renderer = L::Renderer(caster, Rectangle{screenWidth, 0, screenWidth, screenHeight});
     Rectangle boundaries2dRect = Rectangle{0.f,0.f,(float)screenWidth, (float)screenHeight};
@@ -40,26 +41,24 @@ int main(void)
 
     std::vector<std::shared_ptr<L::Ray>> boundaries = L::generateRaysFromRect(boundaries2dRect, true, RED);
     
-    SetTargetFPS(60);
+    //SetTargetFPS(60);
+    
     
     while (!WindowShouldClose())   
     {   
 
         BeginDrawing();
-        ClearBackground(WHITE);
-        DrawRectangleRec(Rectangle{screenWidth, 0, screenWidth, screenHeight}, BLACK);
+        ClearBackground(BLACK);
+        
         float deltaTime = GetFrameTime();
         caster -> resetCollisions();
-        // if(GetMouseDelta().x != 0 || GetMouseDelta().y != 0) 
-        //     caster -> pointTo(GetMousePosition());
-        
-        //caster -> moveVisual(KEY_A, KEY_D, .01);
-        //caster -> moveVisual(-GetMouseDelta().x, screenWidth, PI * 2);
-        //caster -> move(KEY_W, Vector2{200.f * deltaTime, 200.f * deltaTime}, GetMousePosition(), 50.f);
         caster -> pointTo(GetMousePosition());
         caster -> follow(GetMousePosition(),50.f, deltaTime);
+
+        caster -> constrainTo(boundaries2dRect);
         caster -> update(boundaries);
         caster -> update(rRays);
+
         
         for(auto& r : rRays){
 
@@ -72,9 +71,16 @@ int main(void)
             b -> render();
 
         }
-        //wall -> render();    
+          
+        DrawRectangleRec(Rectangle{screenWidth, 0, screenWidth, screenHeight}, BLACK);
+
+
+        auto s = std::to_string(GetFPS()).c_str();
+        DrawText(s, screenWidth / 2, 0, 20, RAYWHITE);
         renderer.render();
-        caster -> render();
+        caster -> renderFOV();
+
+        
 
         EndDrawing();
     }

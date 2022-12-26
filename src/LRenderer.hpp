@@ -8,7 +8,7 @@
 #ifndef LRENDERER_HPP
     #define  LRENDERER_HPP
     
-#define RAY_LENGTH_SHADOW_MODIFIER .01
+#define RAY_LENGTH_SHADOW_MODIFIER .05
 #define NULL_RES_COLOR Color{0,0,0,0}
 #define CONST_WALL_H 12000
 
