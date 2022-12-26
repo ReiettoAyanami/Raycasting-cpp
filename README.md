@@ -22,6 +22,10 @@ Use task file in the [`Windows_build_tasks_vscode`](https://github.com/ReiettoAy
 - No fisheye effect.
 - Added a Wall class.
 
+## Problems with this version
+This version suffers from a very poor performance issues in the current version(26/12/2022).
+
+
 # Showcase video.
 [![Mh something went wrong ig](https://github.com/ReiettoAyanami/Raycasting-cpp/blob/main/videoThumb.png?raw=true)](https://youtu.be/e5O7VMGqcTY)
 
