@@ -23,7 +23,7 @@ Use task file in the [`Windows_build_tasks_vscode`](https://github.com/ReiettoAy
 - Added a Wall class.
 
 ## Problems with this version
-This version suffers from a very poor performance issues in the current version(26/12/2022).
+This version suffers of performance issues in the current version(26/12/2022).
 
 
 # Showcase video.
