@@ -27,7 +27,7 @@ This version suffers of performance issues in the current version(26/12/2022).
 
 
 # Showcase video.
-[![Mh something went wrong ig](https://github.com/ReiettoAyanami/Raycasting-cpp/blob/main/videoThumb.png?raw=true)](https://youtu.be/e5O7VMGqcTY)
+[![Mh something went wrong ig](https://github.com/ReiettoAyanami/Raycasting-cpp/blob/main/project-image-16-9.png?raw=true)](https://youtu.be/e5O7VMGqcTY)
 
 # Special thanks
 [@Massimo Sandretti](https://github.com/MassimoSandre) for helping to fix some memory related bugs, and helping to fix the fisheye effect.
